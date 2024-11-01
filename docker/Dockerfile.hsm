@@ -5,7 +5,8 @@ COPY . .
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
-        gcc pkgconf libpcsclite-dev libcap2-bin
+        gcc pkgconf libpcsclite-dev libcap2-bin 
+        
 RUN make V=1 GO_ENVS="CGO_ENABLED=1" bin/step-ca
 RUN setcap CAP_NET_BIND_SERVICE=+eip bin/step-ca
 
@@ -18,9 +19,11 @@ COPY --from=kms /usr/local/bin/step-kms-plugin /usr/local/bin/step-kms-plugin
 
 USER root
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends pcscd libpcsclite1
-RUN mkdir -p /run/pcscd
-RUN chown step:step /run/pcscd
+#RUN apt-get install -y --no-install-recommends pcscd libpcsclite1
+RUN apt-get install -y --no-install-recommends libpcsclite1
+RUN apt-get install -y --no-install-recommends p11-kit-modules opensc-pkcs11 libglib2.0-0
+#RUN mkdir -p /run/pcscd
+#RUN chown step:step /run/pcscd
 USER step
 
 ENV CONFIGPATH="/home/step/config/ca.json"
